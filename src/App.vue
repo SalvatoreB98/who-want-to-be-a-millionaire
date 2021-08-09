@@ -1,11 +1,16 @@
 <template>
   <div id="app">
-    <div class="d-flex my-layout-container">
-      <div class="p-5 flex-grow-1">
+    <div v-if="!animationStart && !gameOver" class="d-flex my-layout-container">
+      <div
+        class="p-5 flex-grow-1 content-container"
+        :class="gameOver ? 'game-over' : ''"
+      >
         <div class="logo-container">
+          <div style="position: absolute; top: 0; left: 0">
+            <i class="fa fa-user" aria-hidden="true"></i> {{ name }}
+          </div>
           <img class="logo" alt="Vue logo" src="./assets/logo.png" />
         </div>
-
         <question :question="currentQuestion.question" />
         <answers
           @clicked="clicked"
@@ -17,13 +22,43 @@
         <climbing :prizes="myData.prizes" :activePrize="activePrize" />
       </div>
     </div>
-    <div v-if="animationCorrect" class="gif-container">
-      <!-- https://acegif.com/wp-content/gif/confetti-10.gif -->
-      <img
-        src="./assets/check.gif"
-        class=""
-        alt=""
-      />
+    <div
+      v-if="gameOver"
+      class="d-flex flex-column align-items-center justify-content-center"
+      style="height: 100vh"
+    >
+      <h1>Results:</h1>
+      <h3>{{ name }}</h3>
+      <h3>You have won: {{ record }}€</h3>
+      <h1 class="text-white">
+        <button @click="play()" class="btn btn-light" style="min-width: 300px">
+          PLAY AGAIN
+        </button>
+      </h1>
+    </div>
+    <div
+      v-if="!isStarted"
+      class="popup d-flex justify-content-center align-items-center flex-column"
+    >
+      <div class="logo-container p-1">
+        <img
+          class="logo"
+          alt="Vue logo"
+          src="./assets/logo.png"
+          style="min-width: 300px"
+        />
+      </div>
+      <div class="form-group m-3">
+        <label for=""
+          >Insert your name <br />
+          <input class="form-text mt-3" type="text" v-model="name" />
+        </label>
+      </div>
+      <h1 class="text-white">
+        <button @click="play()" class="btn btn-light" style="min-width: 300px">
+          PLAY
+        </button>
+      </h1>
     </div>
   </div>
 </template>
@@ -42,35 +77,54 @@ export default {
   },
   data() {
     return {
+      name: '',
       myData: json,
       currentQuestion: '',
       answers: [],
       activePrize: 0,
       animationCorrect: false,
+      isStarted: false,
+      gameOver: false,
+      record: 0,
     }
   },
-  mounted() {
-    this.randomQuestion()
-  },
+  mounted() {},
   methods: {
+    play() {
+      this.gameOver = false
+      this.isStarted = true
+      this.randomQuestion()
+    },
     clicked(value) {
       console.log('La risposta è...')
       if (value == this.currentQuestion.correct) {
         setTimeout(() => {
+          this.record = this.myData.prizes[this.activePrize]
           this.animationCorrect = true
           console.log('CORRETTA')
+          var prizesBar = document.querySelector('.climbing-container')
+          prizesBar.classList.add('open-menu')
           setTimeout(() => {
             this.activePrize += 1
-            this.randomQuestion()
             this.animationCorrect = false
+            setTimeout(() => {
+              this.randomQuestion()
+              prizesBar.classList.remove('open-menu')
+            }, 1500)
           }, 1500)
         }, 3000)
       } else {
         setTimeout(() => {
           console.log('SBAGLIATA')
+          var prizesBar = document.querySelector('.climbing-container')
+          prizesBar.classList.add('open-menu')
           setTimeout(() => {
+            this.gameOver = true
             this.activePrize = 0
-            this.randomQuestion()
+            setTimeout(() => {
+              this.randomQuestion()
+              prizesBar.classList.remove('open-menu')
+            }, 1500)
           }, 1500)
         }, 3000)
       }
@@ -92,7 +146,6 @@ export default {
 
 <style lang="scss">
 html {
-  height: 100vh;
   background-image: url('https://i.ytimg.com/vi/7mq7wXH8hNo/maxresdefault.jpg');
   overflow-x: hidden;
 }
@@ -117,6 +170,7 @@ body {
   width: 200px;
 }
 .logo-container {
+  position: relative;
   padding: 35px;
 }
 .climbing-container {
@@ -124,29 +178,70 @@ body {
   z-index: 3;
   border-left: 5px solid lightblue;
   background-color: #050545;
+  width: 200px;
+  transition: width 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .gif-container {
   z-index: 6;
   transition: all;
   position: absolute;
   top: 0;
+  width: 100vw;
+  height: 100vh;
   img {
-    width: 100vw;
-    height: 100vh;
     object-fit: cover;
   }
-  animation: entrance 1.5s 1 ease-in-out;
+  animation: entrance 2s ease-in-out;
+}
+.popup {
+  background-image: url('https://i.ytimg.com/vi/7mq7wXH8hNo/maxresdefault.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+  z-index: 6;
+  transition: all;
+  position: absolute;
+  top: 0;
+}
+input[type='text'] {
+  background: none;
+  border-radius: 5em 5em 5em;
+  border: 1px solid white;
+  min-width: 300px;
+  color: white;
+  text-align: center;
+}
+.game-over {
+  animation: game-over 6s cubic-bezier(0.075, 0.82, 0.165, 1) alternate-reverse;
+}
+.content-container {
+  transition: transform 1s ease-in-out;
 }
 @keyframes entrance {
   0% {
     opacity: 0;
   }
-  50% {
+  10% {
     opacity: 100%;
   }
-  100%{
+  90% {
+    opacity: 100%;
+  }
+  100% {
     opacity: 0;
   }
+}
+@keyframes game-over {
+  0% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+}
+.open-menu {
+  width: 500px;
 }
 @media screen and(max-width:725px) {
   .logo {

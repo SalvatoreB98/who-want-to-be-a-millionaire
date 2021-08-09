@@ -51,13 +51,20 @@ export default {
           } else {
             this.isCorrect = false
             clickedElement.classList.add('wrong')
+            var correctAnswer = document.querySelector(
+              `button[value='${this.correct}']`
+            )
+            correctAnswer.classList.add('correct')
           }
           setTimeout(() => {
             this.isAnswered = false
             this.isCorrect = null
             clickedElement.classList.remove('correct')
             clickedElement.classList.remove('wrong')
-          },2000)
+            if (correctAnswer) {
+              correctAnswer.classList.remove('correct')
+            }
+          }, 1500)
         }, 3000)
         this.answered = index
         this.isAnswered = true
@@ -195,6 +202,9 @@ button {
   }
   50% {
     background: #050545;
+  }
+  100% {
+    background: #fbcb2bfa;
   }
 }
 @media screen and (max-width: 720px) {
