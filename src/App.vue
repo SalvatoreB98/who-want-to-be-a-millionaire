@@ -1,20 +1,28 @@
 <template>
-  <div class="p-5" id="app">
-    <div class="p-5">
-      <img alt="Vue logo" src="./assets/logo.png" />
-    </div>
+  <div id="app">
+    <div class="d-flex">
+      <div class="p-5 flex-grow-1">
+        <div class="logo-container">
+          <img class="logo" alt="Vue logo" src="./assets/logo.png" />
+        </div>
 
-    <question :question="currentQuestion.question"/>
-    <answers
-      @clicked="clicked"
-      :answers="currentQuestion.content"
-      :correct="currentQuestion.correct"
-    />
+        <question :question="currentQuestion.question" />
+        <answers
+          @clicked="clicked"
+          :answers="currentQuestion.content"
+          :correct="currentQuestion.correct"
+        />
+      </div>
+      <div class="climbing-container">
+        <climbing :prizes="myData.prizes" :activePrize="activePrize"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Answers from './components/Answers.vue'
+import Climbing from './components/Climbing.vue'
 import question from './components/Question.vue'
 import json from './data.json'
 export default {
@@ -22,12 +30,14 @@ export default {
   components: {
     question,
     Answers,
+    Climbing,
   },
   data() {
     return {
       myData: json,
       currentQuestion: '',
       answers: [],
+      activePrize:1
     }
   },
   mounted() {
@@ -57,6 +67,7 @@ export default {
 html {
   height: 100vh;
   background-color: #050545;
+  overflow-x: hidden;
 }
 body {
   margin: 0;
@@ -69,6 +80,25 @@ body {
   color: #2c3e50;
   background-color: #050545;
   color: white;
+}
+.logo {
+  width: 200px;
+}
+.logo-container {
+  padding: 35px;
+}
+@media screen and(max-width:725px) {
+  .logo {
+    width: 50px;
+  }
+  .logo-container {
+    padding: 10px;
+  }
+}
+.climbing-container{
   padding: 25px;
+  z-index: 3;
+  border-left: 5px solid lightblue;
+  background-color: #050545;
 }
 </style>

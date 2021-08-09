@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <h1 class="question gradient-box">{{ question }}</h1>
   </div>
 </template>
@@ -17,8 +17,5 @@ export default {
 <style lang="scss" scoped>
 .question{
   padding: 25px;
-}
-.gradient-box {
-  border: 1px solid white;
 }
 </style>
