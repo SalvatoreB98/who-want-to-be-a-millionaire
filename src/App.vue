@@ -17,6 +17,14 @@
         <climbing :prizes="myData.prizes" :activePrize="activePrize" />
       </div>
     </div>
+    <div v-if="animationCorrect" class="gif-container">
+      <!-- https://acegif.com/wp-content/gif/confetti-10.gif -->
+      <img
+        src="./assets/check.gif"
+        class=""
+        alt=""
+      />
+    </div>
   </div>
 </template>
 
@@ -38,6 +46,7 @@ export default {
       currentQuestion: '',
       answers: [],
       activePrize: 0,
+      animationCorrect: false,
     }
   },
   mounted() {
@@ -48,10 +57,12 @@ export default {
       console.log('La risposta è...')
       if (value == this.currentQuestion.correct) {
         setTimeout(() => {
+          this.animationCorrect = true
           console.log('CORRETTA')
           setTimeout(() => {
             this.activePrize += 1
             this.randomQuestion()
+            this.animationCorrect = false
           }, 1500)
         }, 3000)
       } else {
@@ -82,7 +93,7 @@ export default {
 <style lang="scss">
 html {
   height: 100vh;
-  background-color: #050545;
+  background-image: url('https://i.ytimg.com/vi/7mq7wXH8hNo/maxresdefault.jpg');
   overflow-x: hidden;
 }
 body {
@@ -94,7 +105,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: #050545;
+  background-image: url('https://i.ytimg.com/vi/7mq7wXH8hNo/maxresdefault.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   color: white;
 }
 .my-layout-container {
@@ -111,6 +124,29 @@ body {
   z-index: 3;
   border-left: 5px solid lightblue;
   background-color: #050545;
+}
+.gif-container {
+  z-index: 6;
+  transition: all;
+  position: absolute;
+  top: 0;
+  img {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+  }
+  animation: entrance 1.5s 1 ease-in-out;
+}
+@keyframes entrance {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 100%;
+  }
+  100%{
+    opacity: 0;
+  }
 }
 @media screen and(max-width:725px) {
   .logo {
