@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="d-flex">
+    <div class="d-flex my-layout-container">
       <div class="p-5 flex-grow-1">
         <div class="logo-container">
           <img class="logo" alt="Vue logo" src="./assets/logo.png" />
@@ -14,7 +14,7 @@
         />
       </div>
       <div class="climbing-container">
-        <climbing :prizes="myData.prizes" :activePrize="activePrize"/>
+        <climbing :prizes="myData.prizes" :activePrize="activePrize" />
       </div>
     </div>
   </div>
@@ -37,27 +37,43 @@ export default {
       myData: json,
       currentQuestion: '',
       answers: [],
-      activePrize:1
+      activePrize: 0,
     }
   },
   mounted() {
-    let randomQuestionGroup = Math.floor(Math.random() * 5)
-    let randomQuestion = Math.floor(
-      Math.random() * this.myData.games[randomQuestionGroup].questions.length
-    )
-    console.log(
-      this.myData.games[randomQuestionGroup].questions[randomQuestion]
-    )
-    this.currentQuestion =
-      this.myData.games[randomQuestionGroup].questions[randomQuestion]
+    this.randomQuestion()
   },
   methods: {
     clicked(value) {
+      console.log('La risposta è...')
       if (value == this.currentQuestion.correct) {
-        console.log('CORRETTA')
+        setTimeout(() => {
+          console.log('CORRETTA')
+          setTimeout(() => {
+            this.activePrize += 1
+            this.randomQuestion()
+          }, 1500)
+        }, 3000)
       } else {
-        console.log('SBAGLIATA')
+        setTimeout(() => {
+          console.log('SBAGLIATA')
+          setTimeout(() => {
+            this.activePrize = 0
+            this.randomQuestion()
+          }, 1500)
+        }, 3000)
       }
+    },
+    randomQuestion() {
+      let randomQuestionGroup = Math.floor(Math.random() * 5)
+      let randomQuestion = Math.floor(
+        Math.random() * this.myData.games[randomQuestionGroup].questions.length
+      )
+      console.log(
+        this.myData.games[randomQuestionGroup].questions[randomQuestion]
+      )
+      this.currentQuestion =
+        this.myData.games[randomQuestionGroup].questions[randomQuestion]
     },
   },
 }
@@ -81,11 +97,20 @@ body {
   background-color: #050545;
   color: white;
 }
+.my-layout-container {
+  height: 100vh;
+}
 .logo {
   width: 200px;
 }
 .logo-container {
   padding: 35px;
+}
+.climbing-container {
+  padding: 25px;
+  z-index: 3;
+  border-left: 5px solid lightblue;
+  background-color: #050545;
 }
 @media screen and(max-width:725px) {
   .logo {
@@ -94,11 +119,5 @@ body {
   .logo-container {
     padding: 10px;
   }
-}
-.climbing-container{
-  padding: 25px;
-  z-index: 3;
-  border-left: 5px solid lightblue;
-  background-color: #050545;
 }
 </style>

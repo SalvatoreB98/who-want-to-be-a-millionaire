@@ -52,6 +52,12 @@ export default {
             this.isCorrect = false
             clickedElement.classList.add('wrong')
           }
+          setTimeout(() => {
+            this.isAnswered = false
+            this.isCorrect = null
+            clickedElement.classList.remove('correct')
+            clickedElement.classList.remove('wrong')
+          },2000)
         }, 3000)
         this.answered = index
         this.isAnswered = true
@@ -107,7 +113,7 @@ export default {
     top: 57%;
     left: 0px;
     height: 10px;
-    width: 1vw;
+    width: 10px;
     border-top: 2px solid white;
   }
   &::after {
@@ -135,11 +141,7 @@ export default {
 .gradient-box {
   z-index: 2;
   background: #050545;
-  background: linear-gradient(
-    0deg,
-    #050545 50%,
-     #06062c 90%,
-  );
+  background: linear-gradient(0deg, #050545 50%, #06062c 90%);
   border-radius: 7em 7em 7em / 7em 7em 7em;
   border: 2px solid white;
 }
@@ -221,16 +223,16 @@ button {
     }
     position: relative;
     &::before {
-       display: inline-block;
-        z-index: 0;
-        transform: translateX(-100%);
-        position: absolute;
-        content: ' ';
-        top: 57%;
-        left: 0px;
-        height: 10px;
-        width: 10vw;
-        border-top: 2px solid white;
+      display: inline-block;
+      z-index: 0;
+      transform: translateX(-100%);
+      position: absolute;
+      content: ' ';
+      top: 57%;
+      left: 0px;
+      height: 10px;
+      width: 10vw;
+      border-top: 2px solid white;
     }
     &::after {
       display: inline-block;
