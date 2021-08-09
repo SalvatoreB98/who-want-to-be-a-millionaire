@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div v-if="!animationStart && !gameOver" class="d-flex my-layout-container">
+    <div v-if="!gameOver" class="d-flex my-layout-container">
       <div
         class="p-5 flex-grow-1 content-container"
         :class="gameOver ? 'game-over' : ''"
@@ -22,11 +22,14 @@
         <climbing :prizes="myData.prizes" :activePrize="activePrize" />
       </div>
     </div>
-    <div
-      v-if="gameOver"
-      class="d-flex flex-column align-items-center justify-content-center"
-      style="height: 100vh"
-    >
+    <div v-if="gameOver" class="gif-container">
+      <img
+        src="https://acegif.com/wp-content/gif/confetti-10.gif"
+        class=""
+        alt=""
+      />
+    </div>
+    <div v-if="gameOver" class="recap">
       <h1>Results:</h1>
       <h3>{{ name }}</h3>
       <h3>You have won: {{ record }}€</h3>
@@ -182,13 +185,14 @@ body {
   transition: width 1s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .gif-container {
-  z-index: 6;
   transition: all;
   position: absolute;
   top: 0;
   width: 100vw;
   height: 100vh;
   img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
   }
   animation: entrance 2s ease-in-out;
@@ -211,6 +215,13 @@ input[type='text'] {
   min-width: 300px;
   color: white;
   text-align: center;
+}
+.recap {
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .game-over {
   animation: game-over 6s cubic-bezier(0.075, 0.82, 0.165, 1) alternate-reverse;
